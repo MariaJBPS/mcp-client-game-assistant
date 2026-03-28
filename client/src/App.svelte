@@ -2,7 +2,7 @@
   let messages: string[] = [];
   let input = '';
 
-  async function send() {
+  const send = async () => {
     if (!input.trim()) return;
 
     const userMessage = input;

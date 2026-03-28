@@ -3,6 +3,8 @@ import { createServer } from "http";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { generateText } from "ai";
 
+const PORT = process.env.PORT || 3000;
+
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY!,
 });
@@ -43,6 +45,10 @@ const server = createServer((req, res) => {
   res.end("Not found");
 });
 
-server.listen(3000, () => {
-  console.log("Server running on http://localhost:3000");
-});
+server
+  .listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  })
+  .on("error", (err) => {
+    console.error("Server failed to start:", err);
+  });

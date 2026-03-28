@@ -2,8 +2,6 @@ import 'dotenv/config';
 import { createServer } from 'http';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { generateText } from 'ai';
-import log from 'loglevel';
-import { timeStamp } from 'console';
 
 const PORT = process.env.PORT || 3000;
 
@@ -34,7 +32,7 @@ const server = createServer((req, res) => {
 
         const reply = {
           text: result.text,
-          usage: result.totalUsage.totalTokens,
+          tokenUsage: result.totalUsage.totalTokens,
           modelId: result.response.modelId,
           timestamp: result.response.timestamp,
         };

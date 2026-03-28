@@ -1,5 +1,13 @@
-export type ChatbotReply = {
+export type Message = {
   text: string;
-  usage: number;
-  modelId: string;
+  author: string;
+  authorType: Author;
+  tokenUsage?: number;
+  modelId?: string;
+  timestamp?: Date;
 };
+
+export enum Author {
+  User,
+  Model,
+}

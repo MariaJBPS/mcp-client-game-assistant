@@ -1,14 +1,28 @@
 <script lang="ts">
-  import type { ChatbotReply } from '../models';
+  import { Author, type Message } from '../models';
 
-  let messages: string[] = [];
+  let messages: Message[] = [];
   let input = '';
+
+  const getAuthor = (authorType: Author): string => {
+    switch (authorType) {
+      case Author.Model:
+        return 'Bot';
+      case Author.User:
+        return 'You';
+    }
+  };
 
   const send = async () => {
     if (!input.trim()) return;
 
-    const userMessage = input;
-    messages = [...messages, `You: ${userMessage}`];
+    const userMessage: Message = {
+      text: input,
+      authorType: Author.User,
+      author: getAuthor(Author.User),
+    };
+
+    messages = [...messages, userMessage];
     input = '';
 
     const res = await fetch('/api/chat', {
@@ -18,11 +32,17 @@
     });
 
     // error handekr
-    const data = (await res.json()).obj as ChatbotReply;
-    messages = [
-      ...messages,
-      `Bot: ${data.text} Token usage: ${data.usage} tokens. Model: ${data.modelId} `,
-    ];
+    const data = (await res.json()).obj as Message;
+
+    const chatbotMessage: Message = {
+      author: getAuthor(Author.Model),
+      authorType: Author.Model,
+      text: data.text,
+      tokenUsage: data.tokenUsage,
+      modelId: data.modelId,
+      timestamp: data.timestamp,
+    };
+    messages = [...messages, chatbotMessage];
   };
 </script>
 
@@ -30,7 +50,14 @@
 
 <div class="chat">
   {#each messages as msg}
-    <div>{msg}</div>
+    <div>
+      <p>{msg.author}: {msg.text}</p>
+      {#if msg.authorType === Author.Model}
+        <p>Token usage: {msg.tokenUsage} tokens.</p>
+        <p>Model: {msg.modelId}</p>
+        <p>Timestamp: {msg.timestamp}</p>
+      {/if}
+    </div>
   {/each}
 </div>
 

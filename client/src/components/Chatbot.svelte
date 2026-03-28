@@ -1,4 +1,6 @@
 <script lang="ts">
+  import type { ChatbotReply } from '../models';
+
   let messages: string[] = [];
   let input = '';
 
@@ -15,12 +17,16 @@
       body: JSON.stringify({ message: userMessage }),
     });
 
-    const data = await res.json();
-    messages = [...messages, `Bot: ${data.reply}`];
+    // error handekr
+    const data = (await res.json()).obj as ChatbotReply;
+    messages = [
+      ...messages,
+      `Bot: ${data.text} Token usage: ${data.usage} tokens. Model: ${data.modelId} `,
+    ];
   };
 </script>
 
-<h1>MCP Chat</h1>
+<h2>MCP Chat</h2>
 
 <div class="chat">
   {#each messages as msg}
@@ -30,12 +36,3 @@
 
 <input bind:value={input} on:keydown={(e) => e.key === 'Enter' && send()} />
 <button on:click={send}>Send</button>
-
-<style>
-  .chat {
-    height: 400px;
-    overflow-y: auto;
-    border: 1px solid #ccc;
-    margin-bottom: 1rem;
-  }
-</style>

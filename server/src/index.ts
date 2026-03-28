@@ -2,6 +2,8 @@ import 'dotenv/config';
 import { createServer } from 'http';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { generateText } from 'ai';
+import log from 'loglevel';
+import { timeStamp } from 'console';
 
 const PORT = process.env.PORT || 3000;
 
@@ -30,8 +32,14 @@ const server = createServer((req, res) => {
           prompt: message,
         });
 
+        const reply = {
+          text: result.text,
+          usage: result.totalUsage.totalTokens,
+          modelId: result.response.modelId,
+          timestamp: result.response.timestamp,
+        };
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ reply: result.text }));
+        res.end(JSON.stringify({ obj: reply }));
       } catch (err) {
         res.writeHead(500);
         res.end(JSON.stringify({ error: 'Failed' }));

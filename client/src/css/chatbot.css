@@ -1,0 +1,7 @@
+.chat {
+  height: 400px;
+  overflow-y: auto;
+  border: 2px solid rgb(255, 51, 0);
+  border-radius: 1rem;
+  margin-bottom: 1rem;
+}

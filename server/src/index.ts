@@ -1,7 +1,7 @@
-import "dotenv/config";
-import { createServer } from "http";
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
-import { generateText } from "ai";
+import 'dotenv/config';
+import { createServer } from 'http';
+import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+import { generateText } from 'ai';
 
 const PORT = process.env.PORT || 3000;
 
@@ -10,31 +10,31 @@ const openrouter = createOpenRouter({
 });
 
 const server = createServer((req, res) => {
-  if (req.method === "POST" && req.url === "/api/chat") {
-    let body = "";
+  if (req.method === 'POST' && req.url === '/api/chat') {
+    let body = '';
 
-    req.on("data", (chunk) => {
+    req.on('data', (chunk) => {
       body += chunk;
     });
 
-    req.on("end", async () => {
+    req.on('end', async () => {
       try {
         if (!body) {
           res.writeHead(400);
-          return res.end(JSON.stringify({ error: "Empty body" }));
+          return res.end(JSON.stringify({ error: 'Empty body' }));
         }
         const { message } = JSON.parse(body);
 
         const result = await generateText({
-          model: openrouter("openrouter/free"),
+          model: openrouter('openrouter/free'),
           prompt: message,
         });
 
-        res.writeHead(200, { "Content-Type": "application/json" });
+        res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ reply: result.text }));
       } catch (err) {
         res.writeHead(500);
-        res.end(JSON.stringify({ error: "Failed" }));
+        res.end(JSON.stringify({ error: 'Failed' }));
       }
     });
 
@@ -42,13 +42,13 @@ const server = createServer((req, res) => {
   }
 
   res.writeHead(404);
-  res.end("Not found");
+  res.end('Not found');
 });
 
 server
   .listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
   })
-  .on("error", (err) => {
-    console.error("Server failed to start:", err);
+  .on('error', (err) => {
+    console.error('Server failed to start:', err);
   });
